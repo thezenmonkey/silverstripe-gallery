@@ -173,7 +173,7 @@ class GalleryUploadField extends UploadField {
 				->first();
 				
 			if (!$joinObj || !$joinObj->exists()) {
-				$joinObj = GalleryPage_Images::create();
+				$joinObj = Page_Images::create();
 				$joinObj->$parentField = $parentID;
 				$joinObj->$componentField = $fileID;
 				$joinObj->write();
@@ -193,8 +193,8 @@ class GalleryUploadField extends UploadField {
 				if(!$record->isInDB()) $record->write();
 
 				//Set the sort order first time image is attached
-				$top = GalleryPage_Images::get()
-					->where("\"GalleryPageID\" = '{$record->ID}'")
+				$top = Page_Images::get()
+					->where("\"PageID\" = '{$record->ID}'")
 					->max('SortOrder');
 
 				$top = (is_numeric($top)) ? $top + 1 : 1;
