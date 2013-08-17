@@ -1,24 +1,5 @@
 <?php
 class GalleryPage extends Page {
-	
-	public static $many_many = array(
-  	'Images' => 'Image'	
-  );
-  
-  public function Images() {
-  	return $this->getManyManyComponents(
-  		'Images',
-  		'',
-  		"\"GalleryPage_Images\".\"SortOrder\" ASC"
-  	);
-  }
-  
-  public function ImagesCaptions() {
-  	$captions = GalleryPage_Images::get()
-			->where("\"GalleryPageID\" = '{$this->ID}'")
-			->map('ImageID', 'Caption')
-			->toArray();
-  }
 
   public function getCMSFields() {
 
@@ -31,6 +12,37 @@ class GalleryPage extends Page {
   }
 
 }
+
+class GalleryExtension extends DataExtension {
+	
+	private static $many_many = array(
+		'Images' => 'Image'	
+	);
+	
+	public function ImagesCaptions() {
+		$captions = Page_Images::get()
+			->where("\"PageID\" = '{$this->ID}'")
+			->map('ImageID', 'Caption')
+			->toArray();
+	}
+	
+	public function ImagesCover() {
+		$captions = Page_Images::get()
+			->where("\"PageID\" = '{$this->ID}'")
+			->map('ImageID', 'Cover')
+			->toArray();
+	}
+	
+	public function Images() {
+		return $this->getManyManyComponents(
+			'Images',
+			'',
+			"\"Page_Images\".\"SortOrder\" ASC"
+		);
+	}
+
+}
+
 class GalleryPage_Controller extends Page_Controller {
   
   public function init() {
@@ -74,24 +86,24 @@ class GalleryPage_ImageExtension extends DataExtension {
 
   	//TODO: Make this more generic and not require a db query each time
   	$controller = Controller::curr();
-		$page = $controller->data();
+	$page = $controller->data();
 
-  	$joinObj = GalleryPage_Images::get()
-			->where("\"GalleryPageID\" = '{$page->ID}' AND \"ImageID\" = '{$this->owner->ID}'")
+  	$joinObj = Page_Images::get()
+			->where("\"PageID\" = '{$page->ID}' AND \"ImageID\" = '{$this->owner->ID}'")
 			->first();
 			
-		return $joinObj->Caption;
+	return $joinObj->Caption;
   }
   
 }
 
-class GalleryPage_Images extends DataObject {
+class Page_Images extends DataObject {
 	
 	static $db = array (
-		'GalleryPageID' => 'Int',
+		'PageID' => 'Int',
 		'ImageID' => 'Int',
-    'Caption' => 'Text',
-    'SortOrder' => 'Int'
-  );
+    		'Caption' => 'Text',
+    		'SortOrder' => 'Int'
+  	);
 }
 
