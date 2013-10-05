@@ -71,10 +71,11 @@ class GalleryUploadField extends UploadField {
 
 		// if there is a has_one relation with that name on the record and 
 		// allowedMaxFileNumber has not been set, it's wanted to be 1
-		if(
-			$record && $record->exists()
-			&& $record->has_one($name) && !$this->getConfig('allowedMaxFileNumber')
-		) {
+		if($record 
+			&& $record->exists()
+			&& $record->has_one($name) 
+			&& !$this->getConfig('allowedMaxFileNumber')
+     ) {
 			$this->setConfig('allowedMaxFileNumber', 1);
 		}
 
@@ -97,12 +98,12 @@ class GalleryUploadField extends UploadField {
 		));
 
 		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
-		// Requirements::javascript('gallery/javascript/GalleryUploadField.js');
 
 		Requirements::css(THIRDPARTY_DIR . '/jquery-ui-themes/smoothness/jquery-ui.css'); // TODO hmmm, remove it?
 		Requirements::css(FRAMEWORK_DIR . '/css/UploadField.css');
-		// Requirements::css('gallery/css/GalleryUploadField.css');
-
+		
+		$allowedMaxFileNumber = $this->getAllowedMaxFileNumber();
+		
 		$config = array(
 			'url' => $this->Link('upload'),
 			'urlSelectDialog' => $this->Link('select'),
